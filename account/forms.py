@@ -36,7 +36,6 @@ class UserRegistrationForm(forms.ModelForm):
             raise forms.ValidationError('Email already in use.')
         return data
 
-
 class UserEditForm(forms.ModelForm):
     class Meta:
         model = get_user_model()
