@@ -5,6 +5,7 @@ from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
+from actions.utils import create_action
 from .forms import ImageCreateForm
 from .models import Image
 
@@ -21,6 +22,7 @@ def image_create(request):
             # assign current user to the item
             new_image.user = request.user
             new_image.save()
+            create_action(request.user, "Bookmarked image", new_image)
             messages.success(request, 'Image added successfully')
             # redirect to new created image detail view
             return redirect(new_image.get_absolute_url())
@@ -51,6 +53,7 @@ def image_like(request):
             image = Image.objects.get(id=image_id)
             if action == "like":
                 image.users_like.add(request.user)
+                create_action(request.user, "like", image)
             else:
                 image.users_like.remove(request.user)
             return JsonResponse({"status": "ok"})
